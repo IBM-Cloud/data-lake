@@ -51,11 +51,20 @@ Examples: `s3.us-south.cloud-object-storage.appdomain.cloud` or just `us-south`
 
 The name of the target object is derived from the file name.
 
-Example:
+### Examples:
+
+Upload one file from current and another file from a sub directory to bucket "mybucket" with the following object names: `myprefix/file1.json` and `myprefix/samples/file2.csv`
 
 `./cos-upload.py eu-de <apikey> mybucket myprefix file1.json samples/file2.csv`
 
-Objects created in "mybucket" are: `myprefix/file1.json` and `myprefix/file2.csv`
+Upload all files (ignoring sub directories) from current directory to bucket "mybucket":
+
+`./cos-upload.py eu-de <apikey> mybucket $(find . -maxdepth 1 -type f)`
+
+Upload all files including all nested sub directories of a given sub directory to bucket "mybucket":
+
+`./cos-upload.py eu-de <apikey> mybucket $($(find my_subdir))`
+
 
 ## Limitations
 
