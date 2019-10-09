@@ -38,7 +38,7 @@ Finally, call the install script to download the required libraries.
 ## Usage
 
 ```
-./cos-upload.py <endpoint> <apikey> <bucket> <prefix> <file> ...
+./cos-upload.py [--flatten] <endpoint> <apikey> <bucket> <prefix> <file> ...
 ```
 
 Parameters:
@@ -49,7 +49,12 @@ Examples: `s3.us-south.cloud-object-storage.appdomain.cloud` or just `us-south`
 -    **prefix**:   A prefix for the object name (can be empty, pass "" in that case)
 -    **file**:     One or more file paths
 
-The name of the target object is derived from the file name.
+The name of the target object is derived from the file path. If the `--flatten`
+option is used, the basename of the file path is used, else the full (absolute or relative)
+file path is used to construct the object name.
+
+Note that environment variables like `$HOME` or `~` expand to an absolute path, which is reflected in the object name
+if `--flatten` is not used.
 
 ### Examples:
 
@@ -63,12 +68,14 @@ Upload all files (ignoring sub directories) from current directory to bucket "my
 
 Upload all files including all nested sub directories of a given sub directory to bucket "mybucket":
 
-`./cos-upload.py eu-de <apikey> mybucket $($(find my_subdir))`
+`./cos-upload.py eu-de <apikey> mybucket $(find my_subdir -type f)`
 
 
 ## Limitations
 
 At the time of writing this readme file, Python 3.7 is not supported by the current cos-aspera library (cos-aspera-0.1.163682)
+
+If a file path starts with `../`, this part is removed from the derived object name.
 
 ## Links
 
