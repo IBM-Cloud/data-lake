@@ -64,11 +64,11 @@ Upload one file from current and another file from a sub directory to bucket "my
 
 Upload all files (ignoring sub directories) from current directory to bucket "mybucket":
 
-`./cos-upload.py eu-de <apikey> mybucket $(find . -maxdepth 1 -type f)`
+`./cos-upload.py eu-de <apikey> mybucket "" $(find . -maxdepth 1 -type f)`
 
 Upload all files including all nested sub directories of a given sub directory to bucket "mybucket":
 
-`./cos-upload.py eu-de <apikey> mybucket $(find my_subdir -type f)`
+`./cos-upload.py eu-de <apikey> mybucket "" $(find my_subdir -type f)`
 
 
 ## Limitations
