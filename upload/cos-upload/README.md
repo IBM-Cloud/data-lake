@@ -84,3 +84,6 @@ If a file path starts with `../`, this part is removed from the derived object n
 [COS Endpoints](https://cloud.ibm.com/docs/services/cloud-object-storage/libraries?topic=cloud-object-storage-endpoints)
 
 [IBM Aspera](https://asperasoft.com)
+
+[IBM SQL Query](https://www.ibm.com/cloud/sql-query)
+
