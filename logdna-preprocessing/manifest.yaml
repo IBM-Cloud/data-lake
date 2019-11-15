@@ -1,0 +1,54 @@
+packages:
+  log_aggregator_package:
+    version: 1.0
+    license: IBM
+    actions:
+      cosTriggerOutput:
+        function: cos_trigger_output.py
+        runtime: python:3
+        outputs:
+          logDna_object:
+            type: String
+      generate_statement_for_new_object:
+        function: generator.py
+        runtime: python:3
+        inputs:
+          logDna_object:
+          # cos uri for your logDna bucket
+          uri_input: ${LOGDNA_DUMP_BUCKET_URI}
+          # cos uri for the bucket where partitioned logDna data will be stored
+          uri_target: ${PARTITIONED_LOGDNA_TARGET_URI}
+        outputs:
+          apikey:
+            type: String
+          sql:
+            type: String
+      execute_statement:
+        docker: ibmfunctions/sqlquery
+        inputs:
+          # API key for your IBM cloud account
+          apikey: ${API_KEY}
+          sql:
+          # Instance CRN of your SQL-Query instance
+          sqlquery_instance_crn: ${SQL_QUERY_INSTANCE_CRN}
+          async: true
+    sequences:
+      convert_added_object:
+        actions: cosTriggerOutput, generate_statement_for_new_object, execute_statement
+    triggers:
+      CosTrigger:
+        feed: /whisk.system/cos/changes
+        inputs:
+          # Name of bucket where logDNA dumps are stored
+          bucket: ${LOGDNA_DUMP_BUCKET_NAME}
+          # Suffix for logDna archive files
+          suffix: .json.gz
+          event_types: write
+          # Endpoint of the logDna bucket where logDNA dumps are stored
+          endpoint: ${LOGDNA_DUMP_BUCKET_ENDPOINT}
+          # Prefix for logDna archive files
+          #prefix: logDNA
+    rules:
+      ConverLogsByCosTrigger:
+        action: convert_added_object
+        trigger: CosTrigger
